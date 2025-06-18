@@ -6,7 +6,7 @@ const registerShow = (req, res) => {
 };
 
 const registerDo = async (req, res, next) => {
-  if (req.body.password != req.body.password1) {
+  if (req.body.password != req.body.confirmPassword) {
     req.flash("error", "The passwords entered do not match.");
     return res.render("register", {  errors: flash("errors") });
   }

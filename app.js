@@ -35,7 +35,8 @@ if (app.get("env") === "production") {
 }
 
 app.use(session(sessionParms));
-
+const csrf = require("./middleware/csrf");
+app.use(csrf);
 const passport = require("passport");
 const passportInit = require("./passport/passportInit");
 

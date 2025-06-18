@@ -1,0 +1,42 @@
+<%- include("partials/head.ejs") %>
+<%- include("partials/header.ejs") %>
+
+<h2><%= story ? "Edit" : "Add" %> Story</h2>
+<form method="POST" action="<%= story ? '/stories/update/' + story._id : '/stories' %>">
+  <div>
+    <label for="storyTitle">name:</label>
+    <input type="text" id="storyTitle" name="storyTitle" value="<%= story ? story.title : '' %>" required />
+  </div>
+  <div>
+    <label for="description">description:</label>
+    <input type="text" id="description" name="description" value="<%= story ? story.description : '' %>" required />
+  </div>
+  <div>
+    <label for="tags">Tags (comma separated):</label>
+    <input
+        type="text"
+        id="tags"
+        name="tags"
+        placeholder="e.g., fun, adventure, memory"
+        value="<%= story ? story.tags : '' %>"
+      />
+      <p id="tag-hints">
+        Suggested tags:
+        <% const tagSuggestions = ["lifestory", "memory", "family", "childhood", "home", "vacation", "travel", "adventure", "dream", "fun", "work", "school", "friends", "pets", "hobby", "inspiring", "celebrate", "achievement"]; %>
+        <% tagSuggestions.forEach((tag, index) => { %>
+          <span class="tag-hint"><%= tag %></span><%= index < tagSuggestions.length - 1 ? ',' : '' %>
+        <% }) %>
+      </p>
+  </div>
+  <div>
+    <label for="favorite">Favorite:</label>
+    <input type="checkbox" id="favorite" value="<%= story ? story.favorite : '' %>" />
+    </div>
+   <div>
+    <label for="story-date">Date:</label>
+    <input type="text" id="story-date" name="story-date" value="<%= story ? story.date : '' %>" "/>
+  </div>
+  <button type="submit" id="adding-story"><%= story ? "Update" : "Add" %></button>
+  <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+</form>
+<%- include("partials/footer.ejs") %>

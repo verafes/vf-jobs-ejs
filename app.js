@@ -1,6 +1,12 @@
 const express = require("express");
 require("express-async-errors");
 
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const rateLimiter = require("express-rate-limit");
+
+const storiesRouter = require("./routes/stories");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -51,6 +57,7 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 app.use("/sessions", require("./routes/sessionRoutes"));
+app.use("/stories", auth, storiesRouter);
 
 // secret word handling
 const auth = require("./middleware/auth");

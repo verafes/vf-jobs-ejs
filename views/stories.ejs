@@ -1,0 +1,38 @@
+<%- include("partials/head.ejs") %>
+<%- include("partials/header.ejs") %>
+<h1>Stories List</h1>
+<table id="stories-table">
+  <table id="story-table">
+    <tr id="story-table-header">
+      <th>Title</th>
+      <th>Description</th>
+      <th>Tags</th>
+      <th>StoryDate</th>
+      <th>Favorite</th>
+      <th colspan="2"></th>
+    </tr>
+  <% if (stories && stories.length) { %>
+    <% story.forEach((story) => { %>
+      <tr>
+        <td><%= story.title %></td>
+        <td><%= story.description %></td>
+        <td><%= story.tags %></td>
+        <td><%= story.storyDate %></td>
+        <td><%= story.favorite %></td>
+        <td><a href="/stories/edit/<%= story._id %>">
+          <button type="button">edit</button>
+        </a></td>
+        <td>
+          <form method="POST" action="/stories/delete/<%= story._id %>" style="display: inline">
+          <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+          <button type="submit">delete</button>
+          </form>
+      </td>
+      </tr>
+    <% }) %>
+  <% } %>
+</table>
+<a href="/stories/new">
+  <button type="button">create new story</button>
+</a>
+<%- include("partials/footer.ejs") %>

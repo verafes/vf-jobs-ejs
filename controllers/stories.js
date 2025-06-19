@@ -4,8 +4,7 @@ const csrf = require("host-csrf");
 const getAllStories = async (req, res) => {
   const userId = req.user._id.toString();
   const stories = await Story.find({ createdBy: userId }).sort("createdAt");
-  console.log("Fetched stories:", stories);
-  console.log("Request keys:", Object.keys(req));
+
   res.render("stories", { stories });
 };
 

@@ -9,12 +9,6 @@ const rateLimit = require("express-rate-limit");
 
 const storiesRouter = require("./routes/stories");
 
-const helmet = require("helmet");
-const xss = require("xss-clean");
-const rateLimiter = require("express-rate-limit");
-
-const storiesRouter = require("./routes/stories");
-
 const app = express();
 
 app.set("view engine", "ejs");

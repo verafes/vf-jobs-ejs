@@ -1,9 +1,11 @@
 const express = require("express");
 require("express-async-errors");
+const csrf = require("host-csrf");
+const cookieParser = require('cookie-parser');
 
 const helmet = require("helmet");
 const xss = require("xss-clean");
-const rateLimiter = require("express-rate-limit");
+const rateLimit = require("express-rate-limit");
 
 const storiesRouter = require("./routes/stories");
 
@@ -13,6 +15,14 @@ app.set("view engine", "ejs");
 app.use(require("body-parser").urlencoded({ extended: true }));
 
 require("dotenv").config(); // to load the .env file into the process.env object
+
+app.use(helmet());
+app.use(xss());
+app.use(rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 100,
+}));
+
 const session = require("express-session");
 
 const MongoDBStore = require("connect-mongodb-session")(session);
@@ -41,8 +51,23 @@ if (app.get("env") === "production") {
 }
 
 app.use(session(sessionParms));
-const csrf = require("./middleware/csrf");
-app.use(csrf);
+app.use(cookieParser(process.env.SESSION_SECRET));
+
+let csrf_development_mode = app.get('env') !== 'production';
+const csrf_options = {
+  development_mode: csrf_development_mode,
+  protected_operations: ["POST", "PUT", "PATCH", "DELETE"],
+  protected_content_types: ["application/json"],
+  cookie: false,
+  sessionKey: 'session'
+};
+app.use(csrf(csrf_options));
+
+app.use((req, res, next) => {
+  res.locals._csrf = csrf.token(req, res);
+  next();
+});
+
 const passport = require("passport");
 const passportInit = require("./passport/passportInit");
 
@@ -54,13 +79,13 @@ app.use(require("connect-flash")());
 
 app.use(require("./middleware/storeLocals"));
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { user: req.user });
 });
+const auth = require("./middleware/auth");
 app.use("/sessions", require("./routes/sessionRoutes"));
 app.use("/stories", auth, storiesRouter);
 
 // secret word handling
-const auth = require("./middleware/auth");
 const secretWordRouter = require("./routes/secretWord");
 app.use("/secretWord", auth, secretWordRouter);
 

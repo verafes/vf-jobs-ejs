@@ -1,0 +1,42 @@
+<%- include("partials/head.ejs") %>
+<%- include("partials/header.ejs") %>
+<h1>Stories List</h1>
+<table id="stories-table">
+    <tr id="story-table-header">
+      <th>Title</th>
+      <th>Description</th>
+      <th>Tags</th>
+      <th>StoryDate</th>
+      <th>Favorite</th>
+      <th colspan="2"></th>
+    </tr>
+  <% if (stories && stories.length) { %>
+    <% stories.forEach((story) => { %>
+      <tr>
+        <td><%= story.title %></td>
+        <td><%= story.description %></td>
+        <td><%= story.tags.join(', ') %></td>
+        <td><%=  story.storyDate ? story.storyDate.toDateString() : '' %></td>
+        <td><%= story.isFavorite ? 'Yes' : 'No' %></td>
+        <td>
+          <a href="/stories/edit/<%= story._id %>">
+            <button type="button">Edit</button>
+          </a></td>
+        <td>
+          <form method="POST" action="/stories/delete/<%= story._id %>" style="display: inline">
+            <input type="hidden" name="_csrf" value="<%= _csrf %>" />
+            <button type="submit">Delete</button>
+          </form>
+      </td>
+      </tr>
+    <% }) %>
+  <% } else { %>
+      <tr>
+        <td colspan="7">No stories found</td>
+      </tr>
+  <% } %>
+</table>
+<a href="/stories/new">
+  <button type="button">Create a new story</button>
+</a>
+<%- include("partials/footer.ejs") %>

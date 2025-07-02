@@ -50,8 +50,8 @@ if (app.get("env") === "production") {
   sessionParms.cookie.secure = true; // serve secure cookies
 }
 
-app.use(session(sessionParms));
 app.use(cookieParser(process.env.SESSION_SECRET));
+app.use(session(sessionParms));
 
 let csrf_development_mode = app.get('env') !== 'production';
 const csrf_options = {
@@ -97,6 +97,8 @@ app.use((err, req, res, next) => {
   res.status(500).send(err.message);
   console.log(err);
 });
+
+module.exports = app;
 
 const port = process.env.PORT || 3000;
 

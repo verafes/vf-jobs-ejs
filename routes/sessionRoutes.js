@@ -17,6 +17,7 @@ router
     passport.authenticate("local", {
       successRedirect: "/",
       failureRedirect: "/sessions/logon",
+      badRequestMessage: 'Credentials missing. Please enter again',
       failureFlash: true,
     })
     // (req, res) => {
